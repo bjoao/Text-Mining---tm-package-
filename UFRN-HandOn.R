@@ -402,7 +402,6 @@ devtools::session_info()
 #```
 
 
-
 ## FIM 
 ## UFRN - Minicurso de Mineração de Dados
 ## Prof. Dr. Belmiro N. João PUC/SP
