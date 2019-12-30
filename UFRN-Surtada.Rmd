@@ -1,0 +1,106 @@
+---
+title: "UFRN-Surtada"
+author: "Belmiro N. Joao"
+date: "15 de novembro de 2019"
+output: html_document
+---
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r}
+# Guarda o texto a ser analisado no objeto "letra"
+# Observe que o texto está com a grafia normal em português
+
+letra <-"Surtada
+Neobeats, calibre 2.1
+Ela é uma diaba
+Aperta um e depois se joga na cama
+Fuma um e pede pra fica na madrugada
+Só não pode fala pra ninguém
+O que a gente faz quando se vê
+Ninguém além da gente precisa saber
+O que passamos ontem
+Onde, eu te faço my my
+Love, love, love, love, love, love, love
+Love, love, love, love, love, love, love
+Love, love, love, love, love, love, love
+Sabe, que a gente faz tudo sem se apegar
+Fumamos um pouco pra ficar relax
+Só não
+Me peça pra ficar
+Safada, como é que tem coragem
+De falar na minha cara
+Que só faz comigo o que tu fez lá em casa
+Tava lembrando de você em cima de mim
+Surtada
+Pega leve com a tara e para
+Com essa mania já, de pensar no fim
+Sabe que quando eu chego é assim
+Vai bem louca fumando haxixe
+Todas elas no meu camarim
+Bailam bailam bailam
+Sabe, que…"
+```
+
+
+
+```{r}
+library(tm)
+library(wordcloud)
+```
+
+Uma vez habilitadas as bibliotecas tm e wordcloud, é necessário transformar o texto em um objeto próprio para análise:
+
+```{r, warning=FALSE}
+#Transforma os dados de texto em vetores
+vs <- VectorSource(letra) # em caso de erro, aguarde instruções
+ 
+#Coloca no formato de Corpus do pacote tm
+temp<- Corpus(vs)
+
+#Uma vez armazenado o texto de interesse, podemos construir a Wordcloud da seguinte forma:
+ 
+#Faz o Word Cloud
+set.seed(221)
+wordcloud(temp)
+
+```
+O qual fornece a seguinte Wordcloud:
+
+```{r, warning=FALSE}
+
+```
+
+
+```{r, warning=FALSE}
+#Coloca tudo em minúsculo
+wc_corpus <- tm_map(temp, tolower)
+ 
+#Tira a pountuação e palavras ruído
+wc_corpus <- tm_map(wc_corpus, removePunctuation)
+wc_corpus <- tm_map(wc_corpus, removeWords, stopwords('portuguese'))
+ 
+#Cria a frequência de palavras
+td_mtx <- TermDocumentMatrix(wc_corpus, control = list(minWordLength = 3))
+v <- sort(rowSums(as.matrix(td_mtx)), decreasing=TRUE)
+df <- data.frame(word=names(v), freq=v)
+set.seed(123)
+wordcloud(df$word, df$freq, min.freq=2)
+```
+
+```{r, warning=FALSE}
+#Habilitando o pacote de cores para uso posterior na nova Nuvem de Palavras
+library(RColorBrewer)
+pal2 <- brewer.pal(8,"Dark2")
+ 
+#Gera o word cloud
+set.seed(55)
+wordcloud(df$word, df$freq, min.freq=1,
+          max.words=Inf, random.order=FALSE, 
+          rot.per=.15, colors=pal2)
+```
+
+
+
+
